@@ -1,0 +1,23 @@
+{
+  "name": "lucinda/migrations",
+  "type": "library",
+  "description": "Lightweight PHP7.1 library for performing cross-environment migrations",
+  "keywords": ["migrations"],
+  "license": "MIT",
+  "require": {
+    "php": "^7.1",
+    "lucinda/console": "~1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Lucinda\\Migration\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Lucian Popescu",
+      "email": "lucian.gabriel.popescu@gmail.com",
+      "role": "Developer"
+    }
+  ]
+}
