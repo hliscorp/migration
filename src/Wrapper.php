@@ -52,7 +52,7 @@ class Wrapper
     public function generate(): string
     {
         $className = "Version".date("YmdHis");
-        $contents = str_replace("TemplateScript", $className, file_get_contents(__DIR__."/TemplateScript.php"));
+        $contents = str_replace("TemplateScript", $className, file_get_contents(dirname(__DIR__)."/templates/TemplateScript.php"));
         file_put_contents($this->folder."/".$className.".php", $contents);
         return $className;
     }
@@ -77,23 +77,6 @@ class Wrapper
         }
         return $output;
     }
-        
-    /**
-     * Runs UP (commit) command migration Script (whose Status is PENDING/FAILED) and returns result
-     *
-     * @return ?Result
-     */
-    public function up(string $className): ?Result
-    {
-        if (!isset($this->instances[$className])) {
-            throw new Exception($className." not known!");
-        }
-        $cacheEntries = $this->cache->read();
-        if (!isset($cacheEntries[$className]) || $cacheEntries[$className]==Status::FAILED) {
-            return $this->goUp($cacheEntries, $className, $this->instances[$className]);
-        }
-        throw new Exception("Migration class already in PASSED state");
-    }
     
     /**
      * Runs DOWN (roll back) command migration Script (whose Status is PASSED) and returns result
@@ -110,6 +93,23 @@ class Wrapper
             return $this->goDown($cacheEntries, $className, $this->instances[$className]);
         }
         throw new Exception("Migration class not found or not in PASSED state");
+    }
+        
+    /**
+     * Runs UP (commit) command migration Script (whose Status is PENDING/FAILED) and returns result
+     *
+     * @return ?Result
+     */
+    public function up(string $className): ?Result
+    {
+        if (!isset($this->instances[$className])) {
+            throw new Exception($className." not known!");
+        }
+        $cacheEntries = $this->cache->read();
+        if (!isset($cacheEntries[$className]) || $cacheEntries[$className]==Status::FAILED) {
+            return $this->goUp($cacheEntries, $className, $this->instances[$className]);
+        }
+        throw new Exception("Migration class already in PASSED state");
     }
     
     /**
@@ -152,22 +152,6 @@ class Wrapper
             $result = new Result($className, Status::FAILED);
             $result->setThrowable($throwable);
             return $result;
-        }
-    }
-    
-    /**
-     * Compiles Result based on version and Cache
-     *
-     * @param array $cacheEntries
-     * @param string $className
-     * @return Result
-     */
-    private function getStatus(array $cacheEntries, string $className): Result
-    {
-        if (isset($cacheEntries[$className])) {
-            return new Result($className, $cacheEntries[$className]);
-        } else {
-            return new Result($className, Status::PENDING);
         }
     }
 }

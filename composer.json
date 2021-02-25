@@ -8,6 +8,9 @@
     "php": "^7.1",
     "lucinda/console": "~1.0"
   },
+  "require-dev": {
+	"lucinda/unit-testing": "^1.0"
+  },
   "autoload": {
     "psr-4": {
       "Lucinda\\Migration\\": "src/"
