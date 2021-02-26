@@ -385,9 +385,9 @@ Class [Lucinda\Migration\Wrapper](https://github.com/aherne/migration/blob/maste
 
 To increase reusability, API makes no assumptions how results will be displayed so this class is strictly a model on whom various displayers may be built!  
 
-### ConsoleDisplayer
+### ConsoleExecutor
 
-Class [Lucinda\Migration\ConsoleDisplayer](https://github.com/aherne/migration/blob/master/src/ConsoleDisplayer.php) makes the assumption you will like to envelop [Wrapper](#wrapper) methods so their results are displayed on console/terminal using commands that map them ([see more](#console-commands)). It comes with following public methods:
+Class [Lucinda\Migration\ConsoleExecutor](https://github.com/aherne/migration/blob/master/src/ConsoleExecutor.php) makes the assumption you will like to envelop [Wrapper](#wrapper) methods so their results are displayed on console/terminal using commands that map them ([see more](#console-commands)). It comes with following public methods:
 
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |
