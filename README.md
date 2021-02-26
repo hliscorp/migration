@@ -14,6 +14,12 @@ Table of contents:
     - [up](#how-does-up-command-work)
     - [down](#how-does-down-command-work)
 - [Reference Guide](#reference-guide)
+    - [Cache](#cache)
+    - [Script](#script)
+    - [Result](#result)
+    - [Status](#status)
+    - [Wrapper](#wrapper)
+    - [ConsoleExecutor](#consoleexecutor)
 
 ## About
 
