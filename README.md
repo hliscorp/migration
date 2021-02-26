@@ -55,18 +55,25 @@ Note that unlike DoctrineMigrationsBundle, **diff** and **dump-schema** operatio
 
 True to its goal of creating a *migration skeleton* for specialization to be built upon, this API only defines common logistics:
 
-- [Cache](https://github.com/aherne/migration/blob/master/src/Cache.php): blueprint for structure where migration progress is saved and tracked
-- [Script](https://github.com/aherne/migration/blob/master/src/Script.php): blueprint for a migration class supporting commit/rollback operations
-- [Result](https://github.com/aherne/migration/blob/master/src/Result.php): class that implements results of a migration (class operation) execution
-    - [Status](https://github.com/aherne/migration/blob/master/src/Status.php): enum that collects possible migration statuses (PENDING, PASSED, FAILED)
-- [Wrapper](https://github.com/aherne/migration/blob/master/src/Wrapper.php): class that binds all four above in order to find and execute migration operations
-- [ConsoleExecutor](https://github.com/aherne/migration/blob/master/src/ConsoleExecutor.php): class that envelopes [Wrapper](https://github.com/aherne/migration/blob/master/src/Wrapper.php) to display migration operation results on console.
+- [Cache](#cache): blueprint for structure where migration progress is saved and tracked
+- [Script](#script): blueprint for a migration class supporting commit/rollback operations
+- [Result](#result): class that implements results of a migration (class operation) execution
+    - [Status](#status): enum that collects possible migration statuses (PENDING, PASSED, FAILED)
+- [Wrapper](#wrapper): class that binds all four above in order to find and execute migration operations
+- [ConsoleExecutor](#consoleexecutor): class that envelopes [Wrapper](#wrapper) to display migration operation results on console.
 
-API is fully PSR-4 compliant, unit tested, only requiring PHP7.1+ interpreter and [Console Table API](https://github.com/aherne/console_table) (for displaying migration results on console). All classes inside belong to namespace **Lucinda\Migration**! To quickly see how it works, check:
+API is fully PSR-4 compliant, only requiring PHP7.1+ interpreter and [Console Table API](https://github.com/aherne/console_table) (for displaying migration results on console). All classes inside belong to namespace **Lucinda\Migration**! To quickly see how it works, check:
 
 - **installation**: downloading API using composer, creating folder to store migrations into
-- **setting cache**: setting up a [Cache](https://github.com/aherne/migration/blob/master/src/Cache.php) that stores migration progress
-- **execution**: using [Wrapper](https://github.com/aherne/migration/blob/master/src/Wrapper.php) to run migrations or [ConsoleExecutor](https://github.com/aherne/migration/blob/master/src/ConsoleExecutor.php) to display results in console and one or more migration [Script](https://github.com/aherne/migration/blob/master/src/Script.php)s
+- **setting cache**: setting up a [Cache](#cache) that stores migration progress
+- **execution**: using [Wrapper](#wrapper) to run migrations or [ConsoleExecutor](#consoleexecutor) to display results in console and one or more migration [Script](#script)s
+
+To insure reliability, API has been fully unit tested using [Unit Testing API](https://github.com/aherne/unit-testing), as you can see in **tests** folder. To run unit tests by yourselves, run these commands:
+
+```bash
+cd vendor/lucinda/migrations
+php test.php
+```
 
 ## Installation
 
@@ -96,9 +103,9 @@ $executor->execute((isset($argv[1])?$argv[1]:"migrate"), (isset($argv[2])?$argv[
 
 ### Setting Cache
 
-Implementing migration [Cache](https://github.com/aherne/migration/blob/master/src/Cache.php) is outside the scope of skeleton API, which makes no assumption on what is the subject of migrations or how should cache be stored (eg: could be MySQL, could be Amazon DynamoDB).
+Implementing migration [Cache](#cache) is outside the scope of skeleton API, which makes no assumption on what is the subject of migrations or how should cache be stored (eg: could be MySQL, could be Amazon DynamoDB).
 
-An example of a [Cache](https://github.com/aherne/migration/blob/master/src/Cache.php) implementation binding to [SQL Data Access API ](https://github.com/aherne/php-sql-data-access-api), using a MySQL table to store info:
+An example of a [Cache](#cache) implementation binding to [SQL Data Access API ](https://github.com/aherne/php-sql-data-access-api), using a MySQL table to store info:
 
 ```php
 class TableCache implements \Hlis\Migration\Cache
@@ -169,7 +176,7 @@ function SQL(string $query, array $boundParameters = array()): \Lucinda\SQL\Stat
 
 ### Execution
 
-Once a [Cache](https://github.com/aherne/migration/blob/master/src/Cache.php) is implemented, you can complete migration script and perform migrations. Example using the two classes in previous section:
+Once a [Cache](#cache) is implemented, you can complete migration script and perform migrations. Example using the two classes in previous section:
 
 ```php
 require(__DIR__."/vendor/autoload.php");
@@ -198,9 +205,9 @@ Above example will work if:
 - mysql connection credentials are set for current development environment as required in [configuration](https://github.com/aherne/php-sql-data-access-api#configuration) section of SQL Data Access API
 - current database user has full rights on target schema (incl. CREATE). If not, run code @ *create* method manually!
 
-You can now go to folder where API was installed and execute *generate* commands, go to **migrations** folder and fill up/down methods accordingly. Once at least one migration [Script](https://github.com/aherne/migration/blob/master/src/Script.php) is filled, you will be able to execute migrations from console.
+You can now go to folder where API was installed and execute *generate* commands, go to **migrations** folder and fill up/down methods accordingly. Once at least one migration [Script](#script) is filled, you will be able to execute migrations from console.
 
-To maximize flexibility, developers that do not want to use console output provided by [ConsoleExecutor](https://github.com/aherne/migration/blob/master/src/ConsoleExecutor.php) can work with [Wrapper](https://github.com/aherne/migration/blob/master/src/Wrapper.php) directly and handle output by themselves.
+To maximize flexibility, developers that do not want to use console output provided by [ConsoleExecutor](#consoleexecutor) can work with [Wrapper](#wrapper) directly and handle output by themselves.
 
 ## Console Commands
 
@@ -208,14 +215,14 @@ API allows following console commands:
 
 | Argument#1 | Argument#2 | Description |
 | --- | --- | --- |
-| generate |  | Generates a template [Script](https://github.com/aherne/migration/blob/master/src/Script.php) class in **migrations** folder outputs its name |
-| migrate |  | (default) Loops through all [Script](https://github.com/aherne/migration/blob/master/src/Script.php) classes in **migrations** folder and executes their *up* method |
-| up | (classname) | Runs *up* method for [Script](https://github.com/aherne/migration/blob/master/src/Script.php) identified by its class name |
-| down | (classname) | Runs *down* method for [Script](https://github.com/aherne/migration/blob/master/src/Script.php) identified by its class name  |
+| generate |  | Generates a template [Script](#script) class in **migrations** folder outputs its name |
+| migrate |  | (default) Loops through all [Script](#script) classes in **migrations** folder and executes their *up* method |
+| up | (classname) | Runs *up* method for [Script](#script) identified by its class name |
+| down | (classname) | Runs *down* method for [Script](#script) identified by its class name  |
 
 ### How does generate command work
 
-This will generate a migration [Script](https://github.com/aherne/migration/blob/master/src/Script.php) class in **migrations** folder. Open that class and fill *up* and *down* methods with queries, as in this example:
+This will generate a migration [Script](#script) class in **migrations** folder. Open that class and fill *up* and *down* methods with queries, as in this example:
 
 ```php
 class Version20210205105634 implements \Hlis\Migration\Script
@@ -241,16 +248,16 @@ Example:
 > php migrations.php generate
 ```
 
-This will output name of [Script](https://github.com/aherne/migration/blob/master/src/Script.php)  created in **migrations** folder whose up/down methods you must fill.
+This will output name of [Script](#script)  created in **migrations** folder whose up/down methods you must fill.
 
 ### How does migrate command work
 
-When *migrate* is ran, API will locate all  [Script](https://github.com/aherne/migration/blob/master/src/Script.php)s classes in **migrations** folder and match each to [Cache](https://github.com/aherne/migration/blob/master/src/Cache.php):
+When *migrate* is ran, API will locate all  [Script](#script)s classes in **migrations** folder and match each to [Cache](#cache):
 
-- if found in [Cache](https://github.com/aherne/migration/blob/master/src/Cache.php) and migration [Status](https://github.com/aherne/migration/blob/master/src/Status.php) is PASSED: *up* is skipped (since it ran already)
+- if found in [Cache](#cache) and migration [Status](#status) is PASSED: *up* is skipped (since it ran already)
 - otherwise: *up* is ran
 
-If *up* throws no \Throwable, migration is saved in [Cache](https://github.com/aherne/migration/blob/master/src/Cache.php) with PASSED status. Otherwise it's saved with FAILED status and \Throwable message will be shown to caller in results summary.
+If *up* throws no [Throwable](https://www.php.net/manual/en/class.throwable.php), migration is saved in [Cache](#cache) with PASSED status. Otherwise it's saved with FAILED status and [Throwable](https://www.php.net/manual/en/class.throwable.php) message will be shown to caller in results summary.
 
 Example:
 
@@ -260,17 +267,17 @@ Example:
 
 The end will be a console table with following columns:
 
-- [Script](https://github.com/aherne/migration/blob/master/src/Script.php) class name
-- [Status](https://github.com/aherne/migration/blob/master/src/Status.php) of *up* method execution
-- error message, if [Script](https://github.com/aherne/migration/blob/master/src/Script.php) threw a \Throwable
+- [Script](#script) class name
+- [Status](#status) of *up* method execution
+- error message, if [Script](#script) threw a [Throwable](https://www.php.net/manual/en/class.throwable.php)
 
 
 ### How does up command work
 
-When *up* (commit) command is ran, API will first check if [Script](https://github.com/aherne/migration/blob/master/src/Script.php) name received as 2nd argument exists on disk in **migrations** folder:
+When *up* (commit) command is ran, API will first check if [Script](#script) name received as 2nd argument exists on disk in **migrations** folder:
 
 - if found on disk
-    - if found in [Cache](https://github.com/aherne/migration/blob/master/src/Cache.php) and migration [Status](https://github.com/aherne/migration/blob/master/src/Status.php) is PASSED: *up* is skipped (since it ran already)
+    - if found in [Cache](#cache) and migration [Status](#status) is PASSED: *up* is skipped (since it ran already)
     - otherwise: *up* is ran
 - otherwise: program exits with error
 
@@ -282,15 +289,15 @@ Example:
 
 The end result will be a console table with following columns:
 
-- [Status](https://github.com/aherne/migration/blob/master/src/Status.php) of [Script](https://github.com/aherne/migration/blob/master/src/Script.php)'s *up* method execution
-- error message, if [Script](https://github.com/aherne/migration/blob/master/src/Script.php) threw a \Throwable
+- [Status](#status) of [Script](#script)'s *up* method execution
+- error message, if [Script](#script) threw a [Throwable](https://www.php.net/manual/en/class.throwable.php)
 
 ### How does down command work
 
-When *down* (rollback) command is ran, API will first check if [Script](https://github.com/aherne/migration/blob/master/src/Script.php) name received as 2nd argument exists on disk in **migrations** folder:
+When *down* (rollback) command is ran, API will first check if [Script](#script) name received as 2nd argument exists on disk in **migrations** folder:
 
 - if found on disk
-    - if found in [Cache](https://github.com/aherne/migration/blob/master/src/Cache.php) and migration [Status](https://github.com/aherne/migration/blob/master/src/Status.php) is PASSED: *down* is ran
+    - if found in [Cache](#cache) and migration [Status](#status) is PASSED: *down* is ran
     - otherwise: *down* is skipped
 - otherwise: program exits with error
 
@@ -303,7 +310,84 @@ Example:
 
 The end result will be a console table with following columns:
 
-- [Status](https://github.com/aherne/migration/blob/master/src/Status.php) of [Script](https://github.com/aherne/migration/blob/master/src/Script.php)'s *up* method execution
-- error message, if [Script](https://github.com/aherne/migration/blob/master/src/Script.php) threw a \Throwable
+- [Status](#status) of [Script](#script)'s *up* method execution
+- error message, if [Script](#script) threw a [Throwable](https://www.php.net/manual/en/class.throwable.php)
 
 ## Reference Guide
+
+This guide includes all classes, enums and interfaces used by API.
+
+### Cache
+
+Interface [Lucinda\Migration\Cache](https://github.com/aherne/migration/blob/master/src/Cache.php) defines operations a cache that saves migration [Lucinda\Migration\Script](https://github.com/aherne/migration/blob/master/src/Script.php)s execution progress must implement. It defines following methods:
+
+| Method | Arguments | Returns | Description |
+| --- | --- | --- | --- |
+| exists |  | bool | Checks cache exists physically |
+| create |  | void | Creates cache if not exists |
+| read |  | string[[Status](#status)] | Gets [Script](#script) classes from cache by runtime [Status](#status) |
+| add | string, [Status](#status) | void | Inserts or updates [Script](#script) in cache by class name and runtime [Status](#status) |
+| remove | string | void | Removes [Script](#script) from cache by class name |
+
+### Script
+
+Interface [Lucinda\Migration\Script](https://github.com/aherne/migration/blob/master/src/Script.php) defines operations a migration script must implement, corresponding to following methods:
+
+| Method | Arguments | Returns | Description |
+| --- | --- | --- | --- |
+| up |  |   | Commits migration to destination |
+| down |  |  | Rolls back migration from destination |
+
+In case an error has occurred, methods are expected to bubble a [Throwable](https://www.php.net/manual/en/class.throwable.php), which will inform API that they ended with an error. Following recommendations apply:
+
+- if you need multiple operations inside up/down, they MUST be transactioned (to insure data integrity)
+- ideally, a migration SHOULD perform a single operation (to prevent conflicts)
+
+### Result
+
+Class [Lucinda\Migration\Result](https://github.com/aherne/migration/blob/master/src/Result.php) encapsulates results of a [Lucinda\Migration\Script](https://github.com/aherne/migration/blob/master/src/Script.php) execution. Following public methods are relevant for developers:
+
+| Method | Arguments | Returns | Description |
+| --- | --- | --- | --- |
+| getClassName |   | string | Gets [Script](#script) class name |
+| getStatus |   | [Status](#status) | Gets status code associated with results of up/down command |
+| getThrowable|   | [Throwable](https://www.php.net/manual/en/class.throwable.php) | Gets throwable class name if [Status](#status) is FAILED |
+
+Generally you won't need to use this class unless you're building your own results displayer on top of [Wrapper](#wrapper)!
+
+### Status
+
+Enum [Lucinda\Migration\Status](https://github.com/aherne/migration/blob/master/src/Status.php) contains list of migration execution [Result](#result) statuses. Since PHP is yet to support enum data type, as elsewhere in Lucinda APIs, possible values are emulated by interface constants:
+
+| Value | Description |
+| --- | --- |
+| PENDING | [Script](#script) has been scheduled for execution |
+| FAILED | [Script](#script) execution has failed, bubbling a [Throwable](https://www.php.net/manual/en/class.throwable.php) |
+| PASSED | [Script](#script) execution was successful |
+
+### Wrapper
+
+Class [Lucinda\Migration\Wrapper](https://github.com/aherne/migration/blob/master/src/Wrapper.php) performs API task of creating, locating and executing migration [Script](#script)s, updating [Cache](#cache) as a result. Following public methods are defined:
+
+| Method | Arguments | Returns | Description |
+| --- | --- | --- | --- |
+| __construct | string $folder, [Cache](#cache) $cache |   | Sets up API for migration based on folder to migration files |
+| generate |   | string | Generates a migration class ([see more](#how-does-generate-command-work)) |
+| migrate |   | [Result](#result)[] | Executes *up* command for all [Script](#script)s found ([see more](#how-does-migrate-command-work)) |
+| up | string $className | [Result](#result) | Executes *up* command for script identified by classname ([see more](#how-does-up-command-work))<br/> <small>Throws [Exception](https://github.com/aherne/migration/blob/master/src/Exception.php) if class not found or already in PASSED state</small> |
+| down | string $className | [Result](#result) | Executes *down* command for script identified by classname ([see more](#how-does-down-command-work))<br/> <small>Throws [Exception](https://github.com/aherne/migration/blob/master/src/Exception.php) if class not found or not in PASSED state</small> |
+
+To increase reusability, API makes no assumptions how results will be displayed so this class is strictly a model on whom various displayers may be built!  
+
+### ConsoleDisplayer
+
+Class [Lucinda\Migration\ConsoleDisplayer](https://github.com/aherne/migration/blob/master/src/ConsoleDisplayer.php) makes the assumption you will like to envelop [Wrapper](#wrapper) methods so their results are displayed on console/terminal using commands that map them ([see more](#console-commands)). It comes with following public methods:
+
+| Method | Arguments | Returns | Description |
+| --- | --- | --- | --- |
+| __construct | string $folder, [Cache](#cache) $cache |   | Sets up [Wrapper](#wrapper) underneath |
+| execute | string $operation, string $className |   | Executes a [Wrapper](#wrapper) method and displays results in console |
+
+When *execute* method is used:
+- $operation value MUST correspond to a [Wrapper](#wrapper) method name (minus constructor)
+- $className value MUST be present only IF $operation is up / down
