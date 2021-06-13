@@ -114,7 +114,7 @@ Implementing migration [Cache](#cache) is outside the scope of skeleton API, whi
 An example of a [Cache](#cache) implementation binding to [SQL Data Access API ](https://github.com/aherne/php-sql-data-access-api), using a MySQL table to store info:
 
 ```php
-class TableCache implements \Hlis\Migration\Cache
+class TableCache implements \Lucinda\Migration\Cache
 {    
     private $tableName;
 
@@ -149,7 +149,7 @@ class TableCache implements \Hlis\Migration\Cache
 
     public function add(string $className, int $statusCode): void
     {
-        $isSuccessful = ($statusCode==\Hlis\Migration\Status::PASSED);
+        $isSuccessful = ($statusCode==\Lucinda\Migration\Status::PASSED);
         $results = SQL("UPDATE ".$this->tableName." SET is_successful=:status, date=NOW() WHERE class_name=:name", [
             ":status"=>$isSuccessful,
             ":name"=>$className            
@@ -231,7 +231,7 @@ API allows following console commands:
 This will generate a migration [Script](#script) class in **migrations** folder. Open that class and fill *up* and *down* methods with queries, as in this example:
 
 ```php
-class Version20210205105634 implements \Hlis\Migration\Script
+class Version20210205105634 implements \Lucinda\Migration\Script
 {
   public function up(): void
   {
