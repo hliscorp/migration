@@ -13,7 +13,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Lucinda\\Migration\\": "src/"
+      "Lucinda\\Migration\\": "src/",
+      "Test\\Lucinda\\Migration\\": "tests/"
     }
   },
   "authors": [
