@@ -62,7 +62,7 @@ class ConsoleExecutor
                             $table->addRow([$result->getClassName(), $this->getDecoratedStatus($result->getStatus()), ""]);
                         }
                     }
-                    $table->display();
+                    echo $table->toString()."\n";
                     break;
                 case "up":
                 case "down":
@@ -76,7 +76,7 @@ class ConsoleExecutor
                     } else {
                         $table->addRow([$this->getDecoratedStatus($result->getStatus()), ""]);
                     }
-                    $table->display();
+                    echo $table->toString()."\n";
                     break;
                 default:
                     throw new Exception("Unsupported operation: ".$operation);
