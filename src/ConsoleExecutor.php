@@ -1,13 +1,15 @@
 <?php
 namespace Lucinda\Migration;
 
+use Lucinda\Console\Text;
+
 /**
  * Performs migrations and binds to Console API to display results in console.
  */
 class ConsoleExecutor
 {
-    private $isWindows = false;
-    private $wrapper;
+    private bool $isWindows = false;
+    private Wrapper $wrapper;
         
     /**
      * Registers migration objects based on folder they are located into and cache table
@@ -112,9 +114,9 @@ class ConsoleExecutor
      * Styles migration Status-es for console (unless OS is windows)
      *
      * @param Status $statusCode
-     * @return string|\Lucinda\Console\Text
+     * @return string|Text
      */
-    private function getDecoratedStatus(int $statusCode)
+    private function getDecoratedStatus(Status $statusCode): string|Text
     {
         $text = null;
         if (!$this->isWindows) {

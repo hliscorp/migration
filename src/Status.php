@@ -4,9 +4,9 @@ namespace Lucinda\Migration;
 /**
  * Enum encapsulating status of up/down command results
  */
-interface Status
+enum Status: int
 {
-    const PENDING = 1;
-    const FAILED = 2;
-    const PASSED = 3;
+    case PENDING = 1;
+    case FAILED = 2;
+    case PASSED = 3;
 }

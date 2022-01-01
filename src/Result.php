@@ -10,9 +10,9 @@ require_once("Status.php");
  */
 class Result
 {
-    private $className;
-    private $status;
-    private $throwable;
+    private string $className;
+    private Status $status;
+    private ?\Throwable $throwable = null;
     
     /**
      * Saves results by name of Script class and status code
@@ -20,7 +20,7 @@ class Result
      * @param string $className
      * @param Status $status
      */
-    public function __construct(string $className, int $status)
+    public function __construct(string $className, Status $status)
     {
         $this->className = $className;
         $this->status = $status;
@@ -61,7 +61,7 @@ class Result
      *
      * @return Status
      */
-    public function getStatus(): int
+    public function getStatus(): Status
     {
         return $this->status;
     }

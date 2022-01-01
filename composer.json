@@ -5,11 +5,11 @@
   "keywords": ["migrations"],
   "license": "MIT",
   "require": {
-    "php": "^7.1",
-    "lucinda/console": "~1.0"
+    "php": "^8.1",
+    "lucinda/console": "~2.0"
   },
   "require-dev": {
-	"lucinda/unit-testing": "^1.0"
+	"lucinda/unit-testing": "^2.0"
   },
   "autoload": {
     "psr-4": {

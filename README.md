@@ -68,7 +68,7 @@ True to its goal of creating a *migration skeleton* for specialization to be bui
 - [Wrapper](#wrapper): class that binds all four above in order to find and execute migration operations
 - [ConsoleExecutor](#consoleexecutor): class that envelopes [Wrapper](#wrapper) to display migration operation results on console.
 
-API is fully PSR-4 compliant, only requiring PHP7.1+ interpreter and [Console Table API](https://github.com/aherne/console_table) (for displaying migration results on console). All classes inside belong to namespace **Lucinda\Migration**! To quickly see how it works, check:
+API is fully PSR-4 compliant, only requiring PHP 8.1+ interpreter and [Console Table API](https://github.com/aherne/console_table) (for displaying migration results on console). All classes inside belong to namespace **Lucinda\Migration**! To quickly see how it works, check:
 
 - **installation**: downloading API using composer, creating folder to store migrations into
 - **setting cache**: setting up a [Cache](#cache) that stores migration progress
@@ -363,9 +363,9 @@ Generally you won't need to use this class unless you're building your own resul
 
 ### Status
 
-Enum [Lucinda\Migration\Status](https://github.com/aherne/migration/blob/master/src/Status.php) contains list of migration execution [Result](#result) statuses. Since PHP is yet to support enum data type, as elsewhere in Lucinda APIs, possible values are emulated by interface constants:
+Enum [Lucinda\Migration\Status](https://github.com/aherne/migration/blob/master/src/Status.php) contains list of migration execution [Result](#result) statuses:
 
-| Value | Description |
+| Case | Description |
 | --- | --- |
 | PENDING | [Script](#script) has been scheduled for execution |
 | FAILED | [Script](#script) execution has failed, bubbling a [Throwable](https://www.php.net/manual/en/class.throwable.php) |

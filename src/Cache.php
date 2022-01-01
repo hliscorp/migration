@@ -29,9 +29,9 @@ interface Cache
      * Inserts or updates entry in cache by class name and runtime status
      *
      * @param string $className
-     * @param \Lucinda\Migration\Status $statusCode
+     * @param Status $statusCode
      */
-    public function add(string $className, int $statusCode): void;
+    public function add(string $className, Status $statusCode): void;
     
     /**
      * Removes entry from cache by class name

@@ -6,9 +6,9 @@ namespace Lucinda\Migration;
  */
 class Wrapper
 {
-    private $folder;
-    private $instances = [];
-    private $cache;
+    private string $folder;
+    private array $instances = [];
+    private Cache $cache;
     
     /**
      * Sets up Cache and Script instances based on migration path received
@@ -77,11 +77,13 @@ class Wrapper
         }
         return $output;
     }
-    
+
     /**
      * Runs DOWN (roll back) command migration Script (whose Status is PASSED) and returns result
      *
+     * @param string $className
      * @return ?Result
+     * @throws Exception
      */
     public function down(string $className): ?Result
     {
@@ -94,11 +96,13 @@ class Wrapper
         }
         throw new Exception("Migration class not found or not in PASSED state");
     }
-        
+
     /**
      * Runs UP (commit) command migration Script (whose Status is PENDING/FAILED) and returns result
      *
+     * @param string $className
      * @return ?Result
+     * @throws Exception
      */
     public function up(string $className): ?Result
     {

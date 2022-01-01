@@ -1,6 +1,8 @@
 <?php
 namespace Test\Lucinda\Migration;
 
+use Lucinda\Migration\Status;
+
 class MockCache implements \Lucinda\Migration\Cache
 {
     private $db=[];
@@ -15,7 +17,7 @@ class MockCache implements \Lucinda\Migration\Cache
         $this->db = [];
     }
         
-    public function add(string $className, int $statusCode): void
+    public function add(string $className, Status $statusCode): void
     {
         $this->db[$className] = $statusCode;
     }
