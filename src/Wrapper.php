@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Migration;
 
 /**
@@ -7,9 +8,12 @@ namespace Lucinda\Migration;
 class Wrapper
 {
     private string $folder;
+    /**
+     * @var array<string,Script>
+     */
     private array $instances = [];
     private Cache $cache;
-    
+
     /**
      * Sets up Cache and Script instances based on migration path received
      *
@@ -24,17 +28,17 @@ class Wrapper
             throw new Exception("Migration folder not found: ".$folder);
         }
         $this->folder = $folder;
-        
+
         // sets cache
         $this->cache = $cache;
-        
+
         // sets migration classes instances
         $files = scandir($folder);
         foreach ($files as $classPath) {
             if (in_array($classPath, [".", ".."])) {
                 continue;
             }
-            require_once($folder."/".$classPath);
+            include_once $folder."/".$classPath;
             $className = str_replace(".php", "", $classPath);
             $object = new $className();
             if (!($object instanceof Script)) {
@@ -43,7 +47,7 @@ class Wrapper
             $this->instances[$className] = $object;
         }
     }
-    
+
     /**
      * Generates a migration class
      *
@@ -52,11 +56,15 @@ class Wrapper
     public function generate(): string
     {
         $className = "Version".date("YmdHis");
-        $contents = str_replace("TemplateScript", $className, file_get_contents(dirname(__DIR__)."/templates/TemplateScript.php"));
+        $contents = str_replace(
+            "TemplateScript",
+            $className,
+            file_get_contents(dirname(__DIR__)."/templates/TemplateScript.php")
+        );
         file_put_contents($this->folder."/".$className.".php", $contents);
         return $className;
     }
-    
+
     /**
      * Runs all remaining migration Script-s (those whose Status is PENDING/FAILED) and returns results
      *
@@ -68,7 +76,7 @@ class Wrapper
         $cacheEntries = $this->cache->read();
         foreach ($this->instances as $className=>$instance) {
             if (!isset($cacheEntries[$className]) || $cacheEntries[$className]==Status::FAILED) {
-                $result = $this->goUp($cacheEntries, $className, $instance);
+                $result = $this->goUp($className, $instance);
                 $output[] = $result;
                 if ($result->getThrowable()) {
                     break;
@@ -92,7 +100,7 @@ class Wrapper
         }
         $cacheEntries = $this->cache->read();
         if (isset($cacheEntries[$className]) && $cacheEntries[$className]==Status::PASSED) {
-            return $this->goDown($cacheEntries, $className, $this->instances[$className]);
+            return $this->goDown($className, $this->instances[$className]);
         }
         throw new Exception("Migration class not found or not in PASSED state");
     }
@@ -111,20 +119,19 @@ class Wrapper
         }
         $cacheEntries = $this->cache->read();
         if (!isset($cacheEntries[$className]) || $cacheEntries[$className]==Status::FAILED) {
-            return $this->goUp($cacheEntries, $className, $this->instances[$className]);
+            return $this->goUp($className, $this->instances[$className]);
         }
         throw new Exception("Migration class already in PASSED state");
     }
-    
+
     /**
      * Executes UP (commit) command on Script, updates Cache and returns Result
      *
-     * @param array $cacheEntries
      * @param string $className
      * @param Script $instance
      * @return Result
      */
-    private function goUp(array $cacheEntries, string $className, Script $instance): Result
+    private function goUp(string $className, Script $instance): Result
     {
         try {
             $instance->up();
@@ -137,16 +144,15 @@ class Wrapper
             return $result;
         }
     }
-    
+
     /**
      * Executes DOWN (roll back) command on Script, updates Cache and returns Result
      *
-     * @param array $cacheEntries
      * @param string $className
      * @param Script $instance
      * @return Result
      */
-    private function goDown(array $cacheEntries, string $className, Script $instance): Result
+    private function goDown(string $className, Script $instance): Result
     {
         try {
             $instance->down();

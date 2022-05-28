@@ -1,7 +1,6 @@
 <?php
-namespace Lucinda\Migration;
 
-require_once("Status.php");
+namespace Lucinda\Migration;
 
 /**
  * Encapsulates results of a Script up/down command, characterized by:
@@ -13,7 +12,7 @@ class Result
     private string $className;
     private Status $status;
     private ?\Throwable $throwable = null;
-    
+
     /**
      * Saves results by name of Script class and status code
      *
@@ -25,17 +24,17 @@ class Result
         $this->className = $className;
         $this->status = $status;
     }
-    
+
     /**
      * Sets throwable that happened when up/down fails
      *
      * @param \Throwable $throwable
      */
-    public function setThrowable(\Throwable $throwable)
+    public function setThrowable(\Throwable $throwable): void
     {
         $this->throwable = $throwable;
     }
-    
+
     /**
      * Sets throwable that happened when up/down command failed
      *
@@ -45,7 +44,7 @@ class Result
     {
         return $this->throwable;
     }
-    
+
     /**
      * Gets name of Script class (corresponding to file name)
      *
@@ -55,7 +54,7 @@ class Result
     {
         return $this->className;
     }
-    
+
     /**
      * Gets status code associated with results of up/down command
      *

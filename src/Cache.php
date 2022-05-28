@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Migration;
 
 /**
@@ -12,19 +13,19 @@ interface Cache
      * @return bool
      */
     public function exists(): bool;
-    
+
     /**
      * Creates cache if not exists
      */
     public function create(): void;
-    
+
     /**
      * Gets script from cache by class name and runtime status
      *
-     * @return \Lucinda\Migration\Status[string]
+     * @return array<string, Status>
      */
     public function read(): array;
-    
+
     /**
      * Inserts or updates entry in cache by class name and runtime status
      *
@@ -32,7 +33,7 @@ interface Cache
      * @param Status $statusCode
      */
     public function add(string $className, Status $statusCode): void;
-    
+
     /**
      * Removes entry from cache by class name
      *

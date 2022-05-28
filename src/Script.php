@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Migration;
 
 /**
@@ -10,7 +11,7 @@ interface Script
      * Commits changes
      */
     public function up(): void;
-    
+
     /**
      * Rolls back changes
      */

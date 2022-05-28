@@ -1,6 +1,7 @@
 <?php
+
 namespace Test\Lucinda\Migration;
-    
+
 use Lucinda\UnitTest\Result;
 
 class ConsoleExecutorTest

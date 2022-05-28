@@ -1,6 +1,10 @@
 <?php
+
 namespace Lucinda\Migration;
 
+use Lucinda\Console\BackgroundColor;
+use Lucinda\Console\FontStyle;
+use Lucinda\Console\Table;
 use Lucinda\Console\Text;
 
 /**
@@ -10,7 +14,7 @@ class ConsoleExecutor
 {
     private bool $isWindows = false;
     private Wrapper $wrapper;
-        
+
     /**
      * Registers migration objects based on folder they are located into and cache table
      *
@@ -22,12 +26,12 @@ class ConsoleExecutor
         try {
             // detects caller operating system
             $this->isWindows = (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN');
-            
+
             // creates migration cache if not exists
             if (!$cache->exists()) {
                 $cache->create();
             }
-            
+
             // instances wrapper
             $this->wrapper = new Wrapper($folder, $cache);
         } catch (\Throwable $e) {
@@ -35,7 +39,7 @@ class ConsoleExecutor
             exit(1);
         }
     }
-    
+
     /**
      * Executes a migration operation and displays results on console. Program accepts following operations:
      * - migrate (default): executes "up" command for all Script-s whose status is PENDING or FAILED and returns results
@@ -56,15 +60,7 @@ class ConsoleExecutor
                     break;
                 case "migrate":
                     $results = $this->wrapper->migrate();
-                    $table = new \Lucinda\Console\Table($this->getDecoratedColumns(["Class", "Status", "Message"]));
-                    foreach ($results as $result) {
-                        if ($result->getStatus()==Status::FAILED) {
-                            $table->addRow([$result->getClassName(), $this->getDecoratedStatus($result->getStatus()), $result->getThrowable()->getMessage()]);
-                        } else {
-                            $table->addRow([$result->getClassName(), $this->getDecoratedStatus($result->getStatus()), ""]);
-                        }
-                    }
-                    echo $table."\n";
+                    echo $this->formatMultipleResults($results)."\n";
                     break;
                 case "up":
                 case "down":
@@ -72,35 +68,80 @@ class ConsoleExecutor
                         throw new Exception("Class name not supplied!");
                     }
                     $result = $this->wrapper->$operation($className);
-                    $table = new \Lucinda\Console\Table($this->getDecoratedColumns(["Status", "Message"]));
-                    if ($result->getStatus()==Status::FAILED) {
-                        $table->addRow([$this->getDecoratedStatus($result->getStatus()), $result->getThrowable()->getMessage()]);
-                    } else {
-                        $table->addRow([$this->getDecoratedStatus($result->getStatus()), ""]);
-                    }
-                    echo $table."\n";
+                    echo $this->formatSingleResult($result)."\n";
                     break;
                 default:
                     throw new Exception("Unsupported operation: ".$operation);
-                    break;
             }
         } catch (\Throwable $e) {
             $this->displayError($e);
         }
     }
-    
+
+    /**
+     * Parses list of migration results into a console table
+     *
+     * @param Result[] $results
+     * @return Table
+     * @throws \Exception
+     */
+    private function formatMultipleResults(array $results): Table
+    {
+        $table = new Table($this->getDecoratedColumns(["Class", "Status", "Message"]));
+        foreach ($results as $result) {
+            if ($result->getStatus()==Status::FAILED) {
+                $table->addRow([
+                    $result->getClassName(),
+                    $this->getDecoratedStatus($result->getStatus()),
+                    $result->getThrowable()->getMessage()
+                ]);
+            } else {
+                $table->addRow([
+                    $result->getClassName(),
+                    $this->getDecoratedStatus($result->getStatus()),
+                    ""
+                ]);
+            }
+        }
+        return $table;
+    }
+
+    /**
+     * Parses a migration result into a console table
+     *
+     * @param Result $result
+     * @return Table
+     * @throws \Exception
+     */
+    private function formatSingleResult(Result $result): Table
+    {
+        $table = new Table($this->getDecoratedColumns(["Status", "Message"]));
+        if ($result->getStatus()==Status::FAILED) {
+            $table->addRow([
+                $this->getDecoratedStatus($result->getStatus()),
+                $result->getThrowable()->getMessage()
+            ]);
+        } else {
+            $table->addRow([
+                $this->getDecoratedStatus($result->getStatus()),
+                ""
+            ]);
+        }
+        return $table;
+    }
+
     /**
      * Styles columns for console (unless OS is windows)
      *
-     * @param array $columns
-     * @return array
+     * @param string[] $columns
+     * @return array<int, Text|string>
      */
     private function getDecoratedColumns(array $columns): array
     {
         if (!$this->isWindows) {
             return array_map(function ($column) {
-                $text = new \Lucinda\Console\Text($column);
-                $text->setFontStyle(\Lucinda\Console\FontStyle::BOLD);
+                $text = new Text($column);
+                $text->setFontStyle(FontStyle::BOLD);
                 return $text;
             }, $columns);
         } else {
@@ -109,7 +150,7 @@ class ConsoleExecutor
             }, $columns);
         }
     }
-    
+
     /**
      * Styles migration Status-es for console (unless OS is windows)
      *
@@ -122,16 +163,16 @@ class ConsoleExecutor
         if (!$this->isWindows) {
             switch ($statusCode) {
                 case Status::PENDING:
-                    $text = new \Lucinda\Console\Text(" PENDING ");
-                    $text->setBackgroundColor(\Lucinda\Console\BackgroundColor::BLUE);
+                    $text = new Text(" PENDING ");
+                    $text->setBackgroundColor(BackgroundColor::BLUE);
                     break;
                 case Status::FAILED:
-                    $text = new \Lucinda\Console\Text(" FAILED ");
-                    $text->setBackgroundColor(\Lucinda\Console\BackgroundColor::RED);
+                    $text = new Text(" FAILED ");
+                    $text->setBackgroundColor(BackgroundColor::RED);
                     break;
                 case Status::PASSED:
-                    $text = new \Lucinda\Console\Text(" PASSED ");
-                    $text->setBackgroundColor(\Lucinda\Console\BackgroundColor::GREEN);
+                    $text = new Text(" PASSED ");
+                    $text->setBackgroundColor(BackgroundColor::GREEN);
                     break;
             }
         } else {
@@ -149,7 +190,7 @@ class ConsoleExecutor
         }
         return $text;
     }
-    
+
     /**
      * Displays error to caller
      *
@@ -158,9 +199,9 @@ class ConsoleExecutor
     private function displayError(\Throwable $throwable): void
     {
         if (!$this->isWindows) {
-            $text = new \Lucinda\Console\Text(" ERROR ");
-            $text->setFontStyle(\Lucinda\Console\FontStyle::BOLD);
-            $text->setBackgroundColor(\Lucinda\Console\BackgroundColor::LIGHT_RED);
+            $text = new Text(" ERROR ");
+            $text->setFontStyle(FontStyle::BOLD);
+            $text->setBackgroundColor(BackgroundColor::LIGHT_RED);
             echo $text->getStyledValue()." ".$throwable->getMessage().PHP_EOL;
         } else {
             echo "ERROR: ".$throwable->getMessage().PHP_EOL;
