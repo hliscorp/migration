@@ -17,8 +17,8 @@ class Wrapper
     /**
      * Sets up Cache and Script instances based on migration path received
      *
-     * @param string $folder
-     * @param Cache $cache
+     * @param  string $folder
+     * @param  Cache  $cache
      * @throws Exception
      */
     public function __construct(string $folder, Cache $cache)
@@ -89,7 +89,7 @@ class Wrapper
     /**
      * Runs DOWN (roll back) command migration Script (whose Status is PASSED) and returns result
      *
-     * @param string $className
+     * @param  string $className
      * @return ?Result
      * @throws Exception
      */
@@ -108,7 +108,7 @@ class Wrapper
     /**
      * Runs UP (commit) command migration Script (whose Status is PENDING/FAILED) and returns result
      *
-     * @param string $className
+     * @param  string $className
      * @return ?Result
      * @throws Exception
      */
@@ -127,8 +127,8 @@ class Wrapper
     /**
      * Executes UP (commit) command on Script, updates Cache and returns Result
      *
-     * @param string $className
-     * @param Script $instance
+     * @param  string $className
+     * @param  Script $instance
      * @return Result
      */
     private function goUp(string $className, Script $instance): Result
@@ -148,8 +148,8 @@ class Wrapper
     /**
      * Executes DOWN (roll back) command on Script, updates Cache and returns Result
      *
-     * @param string $className
-     * @param Script $instance
+     * @param  string $className
+     * @param  Script $instance
      * @return Result
      */
     private function goDown(string $className, Script $instance): Result

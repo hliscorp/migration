@@ -19,7 +19,7 @@ class ConsoleExecutor
      * Registers migration objects based on folder they are located into and cache table
      *
      * @param string $folder Absolute location of migration files folder
-     * @param Cache $cache Cache holding migrations progress
+     * @param Cache  $cache  Cache holding migrations progress
      */
     public function __construct(string $folder, Cache $cache)
     {
@@ -54,24 +54,24 @@ class ConsoleExecutor
     {
         try {
             switch ($operation) {
-                case "generate":
-                    $className = $this->wrapper->generate();
-                    echo $className.PHP_EOL;
-                    break;
-                case "migrate":
-                    $results = $this->wrapper->migrate();
-                    echo $this->formatMultipleResults($results)."\n";
-                    break;
-                case "up":
-                case "down":
-                    if (empty($className)) {
-                        throw new Exception("Class name not supplied!");
-                    }
-                    $result = $this->wrapper->$operation($className);
-                    echo $this->formatSingleResult($result)."\n";
-                    break;
-                default:
-                    throw new Exception("Unsupported operation: ".$operation);
+            case "generate":
+                $className = $this->wrapper->generate();
+                echo $className.PHP_EOL;
+                break;
+            case "migrate":
+                $results = $this->wrapper->migrate();
+                echo $this->formatMultipleResults($results)."\n";
+                break;
+            case "up":
+            case "down":
+                if (empty($className)) {
+                    throw new Exception("Class name not supplied!");
+                }
+                $result = $this->wrapper->$operation($className);
+                echo $this->formatSingleResult($result)."\n";
+                break;
+            default:
+                throw new Exception("Unsupported operation: ".$operation);
             }
         } catch (\Throwable $e) {
             $this->displayError($e);
@@ -81,7 +81,7 @@ class ConsoleExecutor
     /**
      * Parses list of migration results into a console table
      *
-     * @param Result[] $results
+     * @param  Result[] $results
      * @return Table
      * @throws \Exception
      */
@@ -90,17 +90,21 @@ class ConsoleExecutor
         $table = new Table($this->getDecoratedColumns(["Class", "Status", "Message"]));
         foreach ($results as $result) {
             if ($result->getStatus()==Status::FAILED) {
-                $table->addRow([
+                $table->addRow(
+                    [
                     $result->getClassName(),
                     $this->getDecoratedStatus($result->getStatus()),
                     $result->getThrowable()->getMessage()
-                ]);
+                    ]
+                );
             } else {
-                $table->addRow([
+                $table->addRow(
+                    [
                     $result->getClassName(),
                     $this->getDecoratedStatus($result->getStatus()),
                     ""
-                ]);
+                    ]
+                );
             }
         }
         return $table;
@@ -109,7 +113,7 @@ class ConsoleExecutor
     /**
      * Parses a migration result into a console table
      *
-     * @param Result $result
+     * @param  Result $result
      * @return Table
      * @throws \Exception
      */
@@ -117,15 +121,19 @@ class ConsoleExecutor
     {
         $table = new Table($this->getDecoratedColumns(["Status", "Message"]));
         if ($result->getStatus()==Status::FAILED) {
-            $table->addRow([
+            $table->addRow(
+                [
                 $this->getDecoratedStatus($result->getStatus()),
                 $result->getThrowable()->getMessage()
-            ]);
+                ]
+            );
         } else {
-            $table->addRow([
+            $table->addRow(
+                [
                 $this->getDecoratedStatus($result->getStatus()),
                 ""
-            ]);
+                ]
+            );
         }
         return $table;
     }
@@ -133,28 +141,34 @@ class ConsoleExecutor
     /**
      * Styles columns for console (unless OS is windows)
      *
-     * @param string[] $columns
+     * @param  string[] $columns
      * @return array<int, Text|string>
      */
     private function getDecoratedColumns(array $columns): array
     {
         if (!$this->isWindows) {
-            return array_map(function ($column) {
-                $text = new Text($column);
-                $text->setFontStyle(FontStyle::BOLD);
-                return $text;
-            }, $columns);
+            return array_map(
+                function ($column) {
+                    $text = new Text($column);
+                    $text->setFontStyle(FontStyle::BOLD);
+                    return $text;
+                },
+                $columns
+            );
         } else {
-            return array_map(function ($column) {
-                return strtoupper($column);
-            }, $columns);
+            return array_map(
+                function ($column) {
+                    return strtoupper($column);
+                },
+                $columns
+            );
         }
     }
 
     /**
      * Styles migration Status-es for console (unless OS is windows)
      *
-     * @param Status $statusCode
+     * @param  Status $statusCode
      * @return string|Text
      */
     private function getDecoratedStatus(Status $statusCode): string|Text
@@ -162,30 +176,30 @@ class ConsoleExecutor
         $text = null;
         if (!$this->isWindows) {
             switch ($statusCode) {
-                case Status::PENDING:
-                    $text = new Text(" PENDING ");
-                    $text->setBackgroundColor(BackgroundColor::BLUE);
-                    break;
-                case Status::FAILED:
-                    $text = new Text(" FAILED ");
-                    $text->setBackgroundColor(BackgroundColor::RED);
-                    break;
-                case Status::PASSED:
-                    $text = new Text(" PASSED ");
-                    $text->setBackgroundColor(BackgroundColor::GREEN);
-                    break;
+            case Status::PENDING:
+                $text = new Text(" PENDING ");
+                $text->setBackgroundColor(BackgroundColor::BLUE);
+                break;
+            case Status::FAILED:
+                $text = new Text(" FAILED ");
+                $text->setBackgroundColor(BackgroundColor::RED);
+                break;
+            case Status::PASSED:
+                $text = new Text(" PASSED ");
+                $text->setBackgroundColor(BackgroundColor::GREEN);
+                break;
             }
         } else {
             switch ($statusCode) {
-                case Status::PENDING:
-                    $text = "PENDING";
-                    break;
-                case Status::FAILED:
-                    $text = "FAILED";
-                    break;
-                case Status::PASSED:
-                    $text = "PASSED";
-                    break;
+            case Status::PENDING:
+                $text = "PENDING";
+                break;
+            case Status::FAILED:
+                $text = "FAILED";
+                break;
+            case Status::PASSED:
+                $text = "PASSED";
+                break;
             }
         }
         return $text;
