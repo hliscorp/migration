@@ -54,24 +54,24 @@ class ConsoleExecutor
     {
         try {
             switch ($operation) {
-            case "generate":
-                $className = $this->wrapper->generate();
-                echo $className.PHP_EOL;
-                break;
-            case "migrate":
-                $results = $this->wrapper->migrate();
-                echo $this->formatMultipleResults($results)."\n";
-                break;
-            case "up":
-            case "down":
-                if (empty($className)) {
-                    throw new Exception("Class name not supplied!");
-                }
-                $result = $this->wrapper->$operation($className);
-                echo $this->formatSingleResult($result)."\n";
-                break;
-            default:
-                throw new Exception("Unsupported operation: ".$operation);
+                case "generate":
+                    $className = $this->wrapper->generate();
+                    echo $className.PHP_EOL;
+                    break;
+                case "migrate":
+                    $results = $this->wrapper->migrate();
+                    echo $this->formatMultipleResults($results)."\n";
+                    break;
+                case "up":
+                case "down":
+                    if (empty($className)) {
+                        throw new Exception("Class name not supplied!");
+                    }
+                    $result = $this->wrapper->$operation($className);
+                    echo $this->formatSingleResult($result)."\n";
+                    break;
+                default:
+                    throw new Exception("Unsupported operation: ".$operation);
             }
         } catch (\Throwable $e) {
             $this->displayError($e);
@@ -173,36 +173,30 @@ class ConsoleExecutor
      */
     private function getDecoratedStatus(Status $statusCode): string|Text
     {
-        $text = null;
         if (!$this->isWindows) {
+            $text = null;
             switch ($statusCode) {
-            case Status::PENDING:
-                $text = new Text(" PENDING ");
-                $text->setBackgroundColor(BackgroundColor::BLUE);
-                break;
-            case Status::FAILED:
-                $text = new Text(" FAILED ");
-                $text->setBackgroundColor(BackgroundColor::RED);
-                break;
-            case Status::PASSED:
-                $text = new Text(" PASSED ");
-                $text->setBackgroundColor(BackgroundColor::GREEN);
-                break;
+                case Status::PENDING:
+                    $text = new Text(" PENDING ");
+                    $text->setBackgroundColor(BackgroundColor::BLUE);
+                    break;
+                case Status::FAILED:
+                    $text = new Text(" FAILED ");
+                    $text->setBackgroundColor(BackgroundColor::RED);
+                    break;
+                case Status::PASSED:
+                    $text = new Text(" PASSED ");
+                    $text->setBackgroundColor(BackgroundColor::GREEN);
+                    break;
             }
+            return $text;
         } else {
-            switch ($statusCode) {
-            case Status::PENDING:
-                $text = "PENDING";
-                break;
-            case Status::FAILED:
-                $text = "FAILED";
-                break;
-            case Status::PASSED:
-                $text = "PASSED";
-                break;
-            }
+            return match($statusCode) {
+                Status::PENDING => "PENDING",
+                Status::FAILED => "FAILED",
+                Status::PASSED => "PASSED"
+            };
         }
-        return $text;
     }
 
     /**
