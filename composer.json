@@ -1,27 +1,39 @@
 {
-  "name": "lucinda/migrations",
-  "type": "library",
-  "description": "Lightweight PHP7.1 library for performing cross-environment migrations",
-  "keywords": ["migrations"],
-  "license": "MIT",
-  "require": {
-    "php": "^7.1|^8.0",
-    "lucinda/console": "~1.0"
-  },
-  "require-dev": {
-	"lucinda/unit-testing": "^1.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "Lucinda\\Migration\\": "src/",
-      "Test\\Lucinda\\Migration\\": "tests/"
-    }
-  },
-  "authors": [
-    {
-      "name": "Lucian Popescu",
-      "email": "lucian.gabriel.popescu@gmail.com",
-      "role": "Developer"
-    }
-  ]
+    "name": "hlis/migrations",
+    "type": "library",
+    "description": "Lightweight PHP7.1 library for performing cross-environment migrations",
+    "keywords": [
+        "migrations"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^7.1|^8.0",
+        "hlis/console": "~1.0"
+    },
+    "require-dev": {
+        "hlis/unit-testing": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lucinda\\Migration\\": "src/",
+            "Test\\Lucinda\\Migration\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Lucian Popescu",
+            "email": "lucian.gabriel.popescu@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/hliscorp/console"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/hliscorp/unit-testing"
+        }
+    ]
 }
